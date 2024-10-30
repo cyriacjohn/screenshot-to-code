@@ -1,16 +1,14 @@
-FROM node:22-bullseye-slim
+FROM registry.cn-hangzhou.aliyuncs.com/strangerbell/node:22-bullseye-slim
 
 # Set the working directory in the container
 WORKDIR /app
 
-# Copy package.json and yarn.lock
-COPY package.json yarn.lock /app/
+# Copy package.json, yarn.lock and .npmrc
+COPY package.json .npmrc /app/
 
-# Set the environment variable to skip Puppeteer download
-ENV PUPPETEER_SKIP_DOWNLOAD=true
-
-# Install dependencies
-RUN yarn install
+# 设置 npm registry 为国内镜像并安装依赖
+RUN npm config set registry https://registry.npmmirror.com && \
+    npm install --verbose
 
 # Copy the current directory contents into the container at /app
 COPY ./ /app/
